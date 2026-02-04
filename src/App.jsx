@@ -1,6 +1,6 @@
 // App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Login from "./pages/Auth/Login";
@@ -13,7 +13,13 @@ import Documentation from "./pages/Documentation/Documentation";
 export const AuthContext = createContext();
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem("isAuthenticated") === "true";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("isAuthenticated", isAuthenticated);
+  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
@@ -23,7 +29,8 @@ export default function App() {
           <main className="grow container mx-auto px-4 py-6">
             <Routes>
               <Route path="/" element={isAuthenticated ? <Navigate to="/profile" /> : <Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route path="/register" element={isAuthenticated ? <Navigate to="/profile"/> : <Register />} />
+              <Route path="/login" element={isAuthenticated ? <Navigate to="/profile"/> : <Login />} />
               <Route path="/profile" element={isAuthenticated ? <ProfileDashboard /> : <Navigate to="/" />} />
               <Route path="/upload" element={isAuthenticated ? <UploadReport /> : <Navigate to="/" />} />
               <Route path="/ai-doctor" element={isAuthenticated ? <AIDoctorChat /> : <Navigate to="/" />} />
