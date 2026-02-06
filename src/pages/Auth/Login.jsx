@@ -19,10 +19,11 @@ export default function Login() {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/login`,
-        { email, password }
+        { email, password },
+        { withCredentials: true }
       );
+      console.log(response.data)
       setIsAuthenticated(true);
-      localStorage.setItem("isAuthenticated", "true");
     } catch (err) {
       setError(
         err.response?.data?.message || "Login failed. Please try again."

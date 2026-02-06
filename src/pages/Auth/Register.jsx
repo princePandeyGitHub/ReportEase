@@ -22,13 +22,15 @@ export default function Register() {
       // registration 
       await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/register`,
-        { name, email, password }
+        { name, email, password },
+        { withCredentials: true }
       );
 
       // login after registration
       await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/login`,
-        { email, password }
+        { email, password },
+        { withCredentials: true }
       );
       setIsAuthenticated(true);
       localStorage.setItem("isAuthenticated", "true");
