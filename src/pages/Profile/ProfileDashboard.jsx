@@ -3,6 +3,9 @@ import axios from "axios";
 
 export default function ProfileDashboard() {
   const [reports, setReports] = useState([]);
+  const [userName, setUserName] = useState('Not available');
+  const [healthOverview,setHealthOverview] = useState('Not available');
+  const [conditions, setConditions] = useState([]);
 
   useEffect(()=>{
     const loadReports = async() => {
@@ -10,10 +13,19 @@ export default function ProfileDashboard() {
         withCredentials: true,
       })
       setReports(response.data.reports);
-      console.log(response?.data.reports);
+    }
+
+    const loadProfile = async() => {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/profile`,{
+        withCredentials: true,
+      })
+      setUserName(response.data.user.name);
+      setHealthOverview(response.data.user.healthProfile.overview);
+      setConditions(response.data.user.healthProfile.conditions);
     }
 
     loadReports();
+    loadProfile();
   },[])
 
   const deleteReport = (id) => {
@@ -24,9 +36,9 @@ export default function ProfileDashboard() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card">User: John Doe</div>
+        <div className="card">Name: {userName}</div>
         <div className="card">Total Reports: {reports.length}</div>
-        <div className="card">Concerns: Not found</div>
+        <div className="card">Conditions: {conditions.join(" ")}</div>
       </div>
 
       <div className="space-y-4">
@@ -36,6 +48,7 @@ export default function ProfileDashboard() {
             <p className="text-sm opacity-80">{report.aiSummary}</p>
             <div className="mt-3 flex gap-3">
               <button className="text-teal-600 cursor-pointer">View</button>
+              <button className="text-teal-800 cursor-pointer">Download</button>
               <button onClick={() => deleteReport(report._id)} className="text-red-500 cursor-pointer">Delete</button>
             </div>
           </div>
