@@ -6,6 +6,7 @@ export default function ProfileDashboard() {
   const [userName, setUserName] = useState('Not available');
   const [healthOverview,setHealthOverview] = useState('Not available');
   const [conditions, setConditions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(()=>{
     const loadReports = async() => {
@@ -28,9 +29,50 @@ export default function ProfileDashboard() {
     loadProfile();
   },[])
 
-  const deleteReport = (id) => {
+  const downloadReport = async (id) => {
+    setIsLoading(true);
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/reports/download/${id}`,
+        {
+          withCredentials: true,
+          responseType: "blob",
+        }
+      );
+
+      const contentDisposition = res.headers["content-disposition"] || "";
+      const match = contentDisposition.match(/filename="?([^"]+)"?/i);
+      const filename = match?.[1] || `report-${id}.pdf`;
+
+      const blobUrl = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.log(error);
+      alert(error || "something went wrong");
+    } finally {
+      setIsLoading(false)
+    }
+  };
+
+  const deleteReport = async (id) => {
+    try {
+      const confirmation = confirm("do you really want to delete report?");
+      if(confirmation){
+        const res = await axios.delete(`${import.meta.env.VITE_API_URL}/reports/delete/${id}`,{withCredentials: true})
+        console.log(res.data);
+        alert("report deleted successfully");
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error || "something went wrong");
+    }
     setReports(reports.filter(r => r._id !== id));
-    alert("Report deleted successfully");
   };
 
   return (
@@ -48,7 +90,7 @@ export default function ProfileDashboard() {
             <p className="text-sm opacity-80">{report.aiSummary}</p>
             <div className="mt-3 flex gap-3">
               <button className="text-teal-600 cursor-pointer">View</button>
-              <button className="text-teal-800 cursor-pointer">Download</button>
+              <button onClick={() => downloadReport(report._id)} className="text-teal-800 cursor-pointer" disabled={isLoading}>Download</button>
               <button onClick={() => deleteReport(report._id)} className="text-red-500 cursor-pointer">Delete</button>
             </div>
           </div>
