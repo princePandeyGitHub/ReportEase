@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 
 export default function AIDoctorChat() {
   const [messages, setMessages] = useState([
@@ -6,13 +7,16 @@ export default function AIDoctorChat() {
   ]);
   const [input, setInput] = useState("");
 
-  const sendMessage = () => {
+  const sendMessage = async (req,res) => {
     if (!input) return;
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/chat`,{
+      message: input
+    },{
+      withCredentials: true
+    })
     setMessages([...messages, { from: "user", text: input }]);
     setInput("");
-    setTimeout(() => {
-      setMessages(m => [...m, { from: "ai", text: "I am analyzing your concern." }]);
-    }, 800);
+    setMessages([...messages, { from: "ai", text: response.data.reply}])
   };
 
   return (

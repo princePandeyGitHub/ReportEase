@@ -17,7 +17,7 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      const response = await axios.post(https://reportease-backend.onrender.com/auth/login,
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`,
         { email, password },
         { withCredentials: true }
       );
