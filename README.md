@@ -6,6 +6,9 @@ Frontend for ReportEase, an AI-powered health assistant that helps users analyze
 
 - Backend repo: https://github.com/princePandeyGitHub/reportease-backend
 
+## Demo Video
+- https://youtu.be/RBznQQuBHKM
+
 ## Overview
 
 - ReportEase is an AI-powered healthcare platform designed to help individuals understand, track, and manage their medical data over time. Medical reports are often complex, jargon-heavy, and difficult for non-medical users to interpret. ReportEase bridges this gap by transforming raw medical reports into clear, actionable insights and enabling long-term health tracking with the help of AI.
