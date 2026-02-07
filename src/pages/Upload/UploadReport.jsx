@@ -262,7 +262,7 @@ export default function UploadReport() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-teal-600 py-2 text-sm font-semibold text-white transition duration-300 ease-in-out hover:bg-teal-500 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-lg cursor-pointer bg-teal-600 py-2 text-sm font-semibold text-white transition duration-300 ease-in-out hover:bg-teal-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? "Analyzing..." : "Get AI Analysis"}
           </button>
